@@ -1,23 +1,57 @@
 "use client";
+
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import CodeEditor from "@uiw/react-textarea-code-editor";
+import { supabase } from "@/utils/supabase";
+import Navbar from "../components/Navbar";
+
 export default function ShopPage() {
+  const params = useParams<{ slug: string }>();
+  const [content, setContent] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const loadContent = async () => {
+      if (!params?.slug) {
+        setError("Slug is missing.");
+        setIsLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("clientData")
+        .select("content")
+        .eq("slug", params.slug)
+        .single();
+
+      if (error) {
+        setError(error.code === "PGRST116" ? "No data found" : error.message);
+        setIsLoading(false);
+        return;
+      }
+
+      setContent(data?.content ?? "");
+      setIsLoading(false);
+    };
+
+    loadContent();
+  }, [params?.slug]);
+
   return (
     <main>
-      {/* ---------------navbar----------------------------------------------- */}
+      <Navbar slug={params?.slug} />
 
-      <nav className="h-[5vh] bg-[#474444] flex justify-end p-2">
-        <button className="border flex justify-center items-center rounded-full px-3 cursor-pointer text-white">share</button>
-      </nav>
+      {error && <p className="mt-[5vh] p-4 text-red-600">{error}</p>}
 
-      {/* ---------------text-area section ----------------------------------- */}
-
-      <section>
+      <section className={error ? "" : "mt-[5vh]"}>
         <CodeEditor
-          value="ji"
+          value={isLoading ? "Loading..." : content}
           readOnly
           placeholder="Please enter your text here"
           padding={15}
-          style={{fontSize: "18px", minHeight: "95vh", }}
+          style={{ fontSize: "18px", minHeight: "95vh" }}
           className="bg-[#000000]"
         />
       </section>
