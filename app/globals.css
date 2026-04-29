@@ -1,4 +1,33 @@
 @import "tailwindcss";
-:root{
-  background-color: #000000;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top, rgba(113, 113, 122, 0.12), transparent 32%),
+    linear-gradient(180deg, #101014 0%, #09090b 45%, #050507 100%);
+}
+
+body {
+  color: #f4f4f5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+textarea:focus,
+input:focus,
+button:focus {
+  outline: none;
 }

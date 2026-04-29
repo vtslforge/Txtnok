@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,7 +18,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className="relative">{children}</body>
+      <body
+        className={`${inter.className} relative min-h-full bg-zinc-950 text-zinc-100 antialiased selection:bg-zinc-800`}
+      >
+        {children}
+      </body>
     </html>
   );
 }

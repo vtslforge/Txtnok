@@ -51,36 +51,70 @@ const Page = () => {
   };
 
   return (
-    <main className="relative">
+    <main className="relative min-h-screen overflow-hidden">
       {/* -----------------------------------------------------------button overlay------------------------------------- */}
       {showOverlay && (
         <section
-          className="flex items-center justify-center shadow-lg"
-          style={{
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            width: "120px",
-            height: "120px",
-            transform: "translate(-50%, -50%)",
-            zIndex: 50,
-          }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+          onClick={() => setShowOverlay(false)}
         >
           {/* ------------------------------------------------------------form---------------------------------------- */}
           <form
-            className="rounded-md space-y-3"
-            style={{ backgroundColor: "white", padding: "1rem" }}
+            className="w-full max-w-md space-y-5 rounded-xl border border-zinc-800 bg-zinc-950/95 p-6 shadow-2xl shadow-black/40"
             onSubmit={handleSubmit(onSubmit)}
+            onClick={(event) => event.stopPropagation()}
           >
-            <label>enter custom url</label>
-            <input
-              className="border rounded-md p-1"
-              defaultValue="test"
-              {...register("slug", { required: true })}
-            />
-            {errors.slug && <span>This field is required</span>}
-            <input className="border rounded-md px-2" type="submit" />
-            {submitMessage && <p className="text-sm text-green-700">{submitMessage}</p>}
+            <div className="space-y-1">
+              <h2 className="text-2xl font-semibold text-zinc-100">Create a custom URL</h2>
+              <p className="text-sm text-zinc-400">
+                Publish this note with a clean slug that is easy to revisit.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="slug" className="text-sm font-medium text-zinc-300">
+                Custom URL
+              </label>
+              <input
+                id="slug"
+                className="w-full rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-3 text-zinc-100 transition placeholder:text-zinc-500 focus:border-zinc-700 focus:ring-2 focus:ring-zinc-700/70"
+                placeholder="your-snippet-name"
+                {...register("slug", { required: true })}
+              />
+              {errors.slug && (
+                <span className="text-sm text-rose-400">This field is required.</span>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between gap-3">
+              <button
+                type="button"
+                className="rounded-lg border border-zinc-800 px-4 py-2 text-sm font-medium text-zinc-300 transition hover:border-zinc-700 hover:bg-zinc-900"
+                onClick={() => setShowOverlay(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="rounded-lg border border-zinc-700 bg-zinc-100 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-white"
+              >
+                Publish
+              </button>
+            </div>
+
+            <div className="h-5">
+              {submitMessage && (
+                <p
+                  className={`text-sm transition ${
+                    submitMessage === "Submitted" ? "text-emerald-400" : "text-rose-400"
+                  }`}
+                >
+                  {submitMessage === "Submitted"
+                    ? "Snippet published successfully."
+                    : "Submit failed. Try a different slug."}
+                </p>
+              )}
+            </div>
           </form>
         </section>
       )}
@@ -95,14 +129,23 @@ const Page = () => {
       />
 
       {/* ------------------------------------------------------------text-area section ----------------------------------- */}
-      <section onClick={() => setShowOverlay(false)}>
+      <section
+        className="relative z-10 w-full px-0 pb-0 pt-16"
+        onClick={() => setShowOverlay(false)}
+      >
         <CodeEditor
           value={content}
-          onChange={(e)=>setContent(e.target.value)}
+          onChange={(e) => setContent(e.target.value)}
+          padding={8}
           placeholder="Please enter your text here"
-          padding={15}
-          style={{ fontSize: "18px", minHeight: "95vh", zIndex: 0 }}
-          className="bg-[#000000] mt-[5vh]"
+          style={{
+            fontSize: "18px",
+            minHeight: "calc(100vh - 6rem)",
+            zIndex: 0,
+            backgroundColor: "transparent",
+            fontFamily: "inherit",
+          }}
+          className="w-full bg-transparent px-2 text-zinc-100 sm:px-3"
         />
       </section>
     </main>
